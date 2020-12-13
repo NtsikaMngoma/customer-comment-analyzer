@@ -6,50 +6,44 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
-public class CommentAnalyzer {
+import com.ikhokha.techcheck.matcher.contract.IPatternMatcher;
+
+@SuppressWarnings("rawtypes")
+public class CommentAnalyzer implements Callable {
 	
 	private File file;
+	private List<IPatternMatcher> _patternMatchers;
 	
-	public CommentAnalyzer(File file) {
+	public CommentAnalyzer(File file, List<IPatternMatcher> patternMatchers) {
 		this.file = file;
+		_patternMatchers = patternMatchers;
 	}
 	
-	public Map<String, Integer> analyze() {
-		
-		Map<String, Integer> resultsMap = new HashMap<>();
-		
-		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-			
+	public Object analyze() {
+		Map<String, Integer> resultsMap = new HashMap<>();		
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {			
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				
-				if (line.length() < 15) {
-					
-					incOccurrence(resultsMap, "SHORTER_THAN_15");
-
-				} else if (line.contains("Mover")) {
-
-					incOccurrence(resultsMap, "MOVER_MENTIONS");
-				
-				} else if (line.contains("Shaker")) {
-
-					incOccurrence(resultsMap, "SHAKER_MENTIONS");
-				
+				for (IPatternMatcher matcher:  _patternMatchers) {
+					int count = matcher.count(line);
+					boolean validCount = count > 0;
+					if (validCount) {
+						incOccurrence(resultsMap, count, matcher.getReportById());
+					}
 				}
-			}
-			
+			}		
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found: " + file.getAbsolutePath());
 			e.printStackTrace();
 		} catch (IOException e) {
 			System.out.println("IO Error processing file: " + file.getAbsolutePath());
 			e.printStackTrace();
-		}
-		
+		}	
 		return resultsMap;
-		
 	}
 	
 	/**
@@ -57,10 +51,17 @@ public class CommentAnalyzer {
 	 * @param countMap the map that keeps track of counts
 	 * @param key the key for the value to increment
 	 */
-	private void incOccurrence(Map<String, Integer> countMap, String key) {
+	private void incOccurrence(Map<String, Integer> countMap, int wordCount, String key) {
 		
 		countMap.putIfAbsent(key, 0);
-		countMap.put(key, countMap.get(key) + 1);
+		// One has been removed because we want to get the count of common words.
+		countMap.put(key, countMap.get(key) + wordCount);
+	}
+
+	@Override
+	public Object call() throws Exception {
+		// TODO Auto-generated method stub
+		return analyze();
 	}
 
 }
