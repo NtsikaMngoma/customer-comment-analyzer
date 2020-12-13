@@ -1,0 +1,15 @@
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+local.properties
+.classpath
+.settings/
+.loadpath
+.launch
+*.class
+target/**
+.project
+.metadata
