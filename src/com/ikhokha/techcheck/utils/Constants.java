@@ -16,6 +16,4 @@ public interface Constants {
 	interface UrlRegexRules {
 		final String URL_REGEX = "((http:\\/\\/|https:\\/\\/)?(www.)?(([a-zA-Z0-9-]){2,}\\.){1,4}([a-zA-Z]){2,6}(\\/([a-zA-Z-_\\/\\.0-9#:?=&;,]*)?)?)";
 	}
-	
-	final int THREAD_POOL_COUNT = 4;
 }

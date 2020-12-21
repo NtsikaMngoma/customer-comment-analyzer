@@ -3,9 +3,9 @@ package com.ikhokha.techcheck.matcher.service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ikhokha.techcheck.matcher.contract.IPatternMatcher;
+import com.ikhokha.techcheck.matcher.contract.IMatcherContract;
 
-public class WordMatcherService implements IPatternMatcher {
+public class WordMatcherService implements IMatcherContract {
 	private String _keyString;
 	private String _regexString;
 	
@@ -19,7 +19,7 @@ public class WordMatcherService implements IPatternMatcher {
 	}
 
 	@Override
-	public String getReportById() {
+	public String getReportKey() {
 		// TODO Auto-generated method stub
 		return _keyString;
 	}

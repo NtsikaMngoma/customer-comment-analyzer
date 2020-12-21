@@ -1,7 +1,7 @@
 package com.ikhokha.techcheck.matcher.service;
-import com.ikhokha.techcheck.matcher.contract.IPatternMatcher;
+import com.ikhokha.techcheck.matcher.contract.IMatcherContract;
 
-public class WordLengthService implements IPatternMatcher {
+public class WordLengthService implements IMatcherContract {
 	private String _keyString;
 	private int _length;
 	public static enum Condition {
@@ -11,7 +11,7 @@ public class WordLengthService implements IPatternMatcher {
 	}
 	private Condition _condition;
 
-	public WordLengthService(String keyString, int length, Condition condition) throws Exception {
+	public WordLengthService(String keyString, Condition condition, int length) throws Exception {
 		boolean validLengthVal = length < 1;
 		if (validLengthVal) {
 			throw new Exception("Condition length cannot be less than 1");
@@ -24,7 +24,7 @@ public class WordLengthService implements IPatternMatcher {
 	}
 
 	@Override
-	public String getReportById() {
+	public String getReportKey() {
 		// TODO Auto-generated method stub
 		return _keyString;
 	}

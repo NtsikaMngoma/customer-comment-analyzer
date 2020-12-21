@@ -10,29 +10,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import com.ikhokha.techcheck.matcher.contract.IPatternMatcher;
+import com.ikhokha.techcheck.matcher.contract.IMatcherContract;
 
-@SuppressWarnings("rawtypes")
-public class CommentAnalyzer implements Callable {
+public class CommentAnalyzer implements Callable<Map<String, Integer>> {
 	
 	private File file;
-	private List<IPatternMatcher> _patternMatchers;
+	private List<IMatcherContract> matcher;
 	
-	public CommentAnalyzer(File file, List<IPatternMatcher> patternMatchers) {
+	public CommentAnalyzer(File file, List<IMatcherContract> matcher) {
 		this.file = file;
-		_patternMatchers = patternMatchers;
+		this.matcher = matcher;
 	}
 	
-	public Object analyze() {
+	/**
+	 * @return {@link Map}
+	 */
+	public Map<String, Integer> analyze() {
 		Map<String, Integer> resultsMap = new HashMap<>();		
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {			
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				for (IPatternMatcher matcher:  _patternMatchers) {
+				for (IMatcherContract matcher:  matcher) {
 					int count = matcher.count(line);
 					boolean validCount = count > 0;
 					if (validCount) {
-						incOccurrence(resultsMap, count, matcher.getReportById());
+						incOccurrence(resultsMap, count, matcher.getReportKey());
 					}
 				}
 			}		
@@ -54,12 +56,14 @@ public class CommentAnalyzer implements Callable {
 	private void incOccurrence(Map<String, Integer> countMap, int wordCount, String key) {
 		
 		countMap.putIfAbsent(key, 0);
-		// One has been removed because we want to get the count of common words.
 		countMap.put(key, countMap.get(key) + wordCount);
 	}
 
+	/**
+	 * return {@link Map}
+	 */
 	@Override
-	public Object call() throws Exception {
+	public Map<String, Integer> call() throws Exception {
 		// TODO Auto-generated method stub
 		return analyze();
 	}

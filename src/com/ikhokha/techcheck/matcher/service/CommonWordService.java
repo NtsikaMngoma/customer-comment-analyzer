@@ -3,21 +3,24 @@ package com.ikhokha.techcheck.matcher.service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ikhokha.techcheck.matcher.contract.IPatternMatcher;
+import com.ikhokha.techcheck.matcher.contract.IMatcherContract;
 
-public class CommonWordService implements IPatternMatcher {
+public class CommonWordService implements IMatcherContract {
 
 	private String _key;
 	private String _keyword;
 	
 	
-	public CommonWordService(String key, String keyword) {
+	public CommonWordService(String key, String keyword) throws Exception {
+		if(key.isEmpty() || keyword.isEmpty()){
+            throw new Exception("Report key or search keyword cannot be empty");
+        }
 		_key = key;
 		_keyword = keyword;
 	}
 
 	@Override
-	public String getReportById() {
+	public String getReportKey() {
 		// TODO Auto-generated method stub
 		return _key;
 	}
